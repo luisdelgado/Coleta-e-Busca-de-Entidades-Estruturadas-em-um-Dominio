@@ -29,7 +29,7 @@ class LinkParser(HTMLParser):
         return htmlString, self.links
 
 
-def crawler(url, maxPages):
+def crawler(url, maxPages, otimizacao):
     pagesToVisit = [url]
     numberVisited = 0
     while numberVisited < maxPages and pagesToVisit != []:
@@ -38,15 +38,21 @@ def crawler(url, maxPages):
         pagesToVisit = pagesToVisit[1:]
         print(numberVisited, "Visiting:", url)
         parser = LinkParser()
-        data, links = parser.getLinks(url)
+        try:
+            data, links = parser.getLinks(url)
 
-        # Verificando se o link já está em pagesToVisit para poder adiciona-lo
-        for link in links:
-            # Se tiver, remove ele de links
-            if not (link in pagesToVisit):
-                pagesToVisit.append(link)
+            # Verificando se o link já está em pagesToVisit para poder adiciona-lo
+            if (otimizacao):
+                for link in links:
+                    # Se tiver, remove ele de links
+                    if not (link in pagesToVisit):
+                        pagesToVisit.append(link)
+            else:
+                pagesToVisit = pagesToVisit + links
 
+        except:
+            print("Erro!")
         print(pagesToVisit)
 
 if __name__ == '__main__':
-    crawler("https://www.vagalume.com.br/", 10);
+    crawler("https://www.vagalume.com.br/", 10, True);

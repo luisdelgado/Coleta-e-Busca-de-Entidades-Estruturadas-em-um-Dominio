@@ -1,0 +1,10 @@
+https://www.letras.mus.br/
+https://www.musica.com: utf-8 erro
+https://www.lyrics.com
+https://www.azlyrics.com/
+https://www.vagalume.com.br/
+http://www.lyricsfreak.com: javascript erro
+https://genius.com/: HTTP Error 403: Forbidden
+http://www.songlyrics.com/: HTTP Error 403: Forbidden
+http://www.metrolyrics.com
+https://www.cowboylyrics.com/: utf-8 erro

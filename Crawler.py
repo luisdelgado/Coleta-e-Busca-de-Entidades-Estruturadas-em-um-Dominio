@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from urllib.request import urlopen
 from urllib import parse
+import traceback
 
 class LinkParser(HTMLParser):
 
@@ -39,19 +40,33 @@ def crawler(url, maxPages, otimizacao):
         print(numberVisited, "Visiting:", url)
         parser = LinkParser()
         try:
-            data, links = parser.getLinks(url)
+
+            # Configurando nome do arquivo
+            save = url
+            save = save.replace('https', '')
+            save = save.replace('http', '')
+            save = save.replace(':', '')
+            save = save.replace(save[-1:], '')
+            save = save + ".html"
+            datas, links = parser.getLinks(url)
+
+            # Escrevendo no arquivo
+            f = open('arquivos/' + str(save), 'w+')
+            f.write(str(datas))
 
             # Verificando se o link já está em pagesToVisit para poder adiciona-lo
-            if (otimizacao):
-                for link in links:
+            if otimizacao:
+                for idx, link in enumerate(links):
+
                     # Se tiver, remove ele de links
-                    if not (link in pagesToVisit):
+                    if link not in pagesToVisit:
                         pagesToVisit.append(link)
+
             else:
                 pagesToVisit = pagesToVisit + links
 
         except:
-            print("Erro!")
+            print(traceback.print_exc())
         print(pagesToVisit)
 
 if __name__ == '__main__':

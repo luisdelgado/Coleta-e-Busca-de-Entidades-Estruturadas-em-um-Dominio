@@ -30,7 +30,7 @@ class LinkParser(HTMLParser):
         return htmlString, self.links
 
 
-def crawler(url, maxPages, otimizacao):
+def crawler(url, maxPages, webSearch, webAnalytics):
     pagesToVisit = [url]
     numberVisited = 0
     while numberVisited < maxPages and pagesToVisit != []:
@@ -39,6 +39,7 @@ def crawler(url, maxPages, otimizacao):
         pagesToVisit = pagesToVisit[1:]
         print(numberVisited, "Visiting:", url)
         parser = LinkParser()
+        foundWord = False
         try:
 
             # Configurando nome do arquivo
@@ -48,26 +49,47 @@ def crawler(url, maxPages, otimizacao):
             save = save.replace(':', '')
             save = save.replace(save[-1:], '')
             save = save + ".html"
-            datas, links = parser.getLinks(url)
+            data, links = parser.getLinks(url)
 
-            # Escrevendo no arquivo
-            f = open('arquivos/' + str(save), 'w+')
-            f.write(str(datas))
+            if webAnalytics!=[]:
 
-            # Verificando se o link já está em pagesToVisit para poder adiciona-lo
-            if otimizacao:
-                for idx, link in enumerate(links):
+                # Verificando se as palavras estão no conteudo da página para adicionar links
+                for word in webAnalytics:
+                    if data.find(word) > -1:
+                        foundWord = True
 
-                    # Se tiver, remove ele de links
-                    if link not in pagesToVisit:
-                        pagesToVisit.append(link)
+                # Escrevendo no arquivo
+                f = open('arquivos/' + str(save), 'w+')
+                f.write(str(data))
+
+                # Verificando se o link já está em pagesToVisit para poder adiciona-lo
+                if webSearch and foundWord:
+                    for idx, link in enumerate(links):
+
+                        # Se tiver, não adiciona ele em links
+                        if link not in pagesToVisit:
+                            pagesToVisit.append(link)
 
             else:
-                pagesToVisit = pagesToVisit + links
+
+                # Escrevendo no arquivo
+                f = open('arquivos/' + str(save), 'w+')
+                f.write(str(data))
+
+                # Verificando se o link já está em pagesToVisit para poder adiciona-lo
+                if webSearch:
+                    for idx, link in enumerate(links):
+
+                        # Se tiver, não adiciona ele em links
+                        if link not in pagesToVisit:
+                            pagesToVisit.append(link)
+
+                else:
+                    pagesToVisit = pagesToVisit + links
 
         except:
             print(traceback.print_exc())
         print(pagesToVisit)
 
 if __name__ == '__main__':
-    crawler("https://www.vagalume.com.br/", 10, True);
+    crawler("https://www.vagalume.com.br/", 10, True, ["sadadasd"]);

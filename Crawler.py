@@ -26,8 +26,11 @@ class LinkParser(HTMLParser):
         response = urlopen(url)
         htmlBytes = response.read()
         htmlString = htmlBytes.decode("utf-8")
-        self.feed(htmlString)
-        return htmlString, self.links
+        if htmlString.find("text/html"):
+            self.feed(htmlString)
+            return htmlString, self.links
+        else:
+            return "", []
 
 
 def crawler(url, maxPages, webSearch, webAnalytics):
@@ -44,10 +47,11 @@ def crawler(url, maxPages, webSearch, webAnalytics):
 
             # Configurando nome do arquivo
             save = url
-            save = save.replace('https', '')
-            save = save.replace('http', '')
+            save = save.replace('https://', '')
+            save = save.replace('http://', '')
             save = save.replace(':', '')
-            save = save.replace(save[-1:], '')
+            if (save[-1:] == "/"):
+                save = save.replace(save[-1:], '')
             save = save + ".html"
             data, links = parser.getLinks(url)
 
@@ -92,4 +96,4 @@ def crawler(url, maxPages, webSearch, webAnalytics):
         print(pagesToVisit)
 
 if __name__ == '__main__':
-    crawler("https://www.vagalume.com.br/", 10, True, ["sadadasd"]);
+    crawler("http://www.jobs.com/", 20, False, []);

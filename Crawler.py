@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from urllib.request import urlopen
 from urllib import parse
+import traceback
 
 class LinkParser(HTMLParser):
 
@@ -25,11 +26,14 @@ class LinkParser(HTMLParser):
         response = urlopen(url)
         htmlBytes = response.read()
         htmlString = htmlBytes.decode("utf-8")
-        self.feed(htmlString)
-        return htmlString, self.links
+        if htmlString.find("text/html"):
+            self.feed(htmlString)
+            return htmlString, self.links
+        else:
+            return "", []
 
 
-def crawler(url, maxPages, otimizacao):
+def crawler(url, maxPages, webSearch, webAnalytics):
     pagesToVisit = [url]
     numberVisited = 0
     while numberVisited < maxPages and pagesToVisit != []:
@@ -38,21 +42,58 @@ def crawler(url, maxPages, otimizacao):
         pagesToVisit = pagesToVisit[1:]
         print(numberVisited, "Visiting:", url)
         parser = LinkParser()
+        foundWord = False
         try:
+
+            # Configurando nome do arquivo
+            save = url
+            save = save.replace('https://', '')
+            save = save.replace('http://', '')
+            save = save.replace(':', '')
+            if (save[-1:] == "/"):
+                save = save.replace(save[-1:], '')
+            save = save + ".html"
             data, links = parser.getLinks(url)
 
-            # Verificando se o link já está em pagesToVisit para poder adiciona-lo
-            if (otimizacao):
-                for link in links:
-                    # Se tiver, remove ele de links
-                    if not (link in pagesToVisit):
-                        pagesToVisit.append(link)
+            if webAnalytics!=[]:
+
+                # Verificando se as palavras estão no conteudo da página para adicionar links
+                for word in webAnalytics:
+                    if data.find(word) > -1:
+                        foundWord = True
+
+                # Escrevendo no arquivo
+                f = open('arquivos/' + str(save), 'w+')
+                f.write(str(data))
+
+                # Verificando se o link já está em pagesToVisit para poder adiciona-lo
+                if webSearch and foundWord:
+                    for idx, link in enumerate(links):
+
+                        # Se tiver, não adiciona ele em links
+                        if link not in pagesToVisit:
+                            pagesToVisit.append(link)
+
             else:
-                pagesToVisit = pagesToVisit + links
+
+                # Escrevendo no arquivo
+                f = open('arquivos/' + str(save), 'w+')
+                f.write(str(data))
+
+                # Verificando se o link já está em pagesToVisit para poder adiciona-lo
+                if webSearch:
+                    for idx, link in enumerate(links):
+
+                        # Se tiver, não adiciona ele em links
+                        if link not in pagesToVisit:
+                            pagesToVisit.append(link)
+
+                else:
+                    pagesToVisit = pagesToVisit + links
 
         except:
-            print("Erro!")
+            print(traceback.print_exc())
         print(pagesToVisit)
 
 if __name__ == '__main__':
-    crawler("https://www.vagalume.com.br/", 10, True);
+    crawler("http://www.jobs.com/", 20, False, []);

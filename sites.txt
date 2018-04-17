@@ -1,10 +1,7 @@
-https://www.letras.mus.br/
-https://www.musica.com: utf-8 erro
-https://www.lyrics.com
-https://www.azlyrics.com/
-https://www.vagalume.com.br/
-http://www.lyricsfreak.com: javascript erro
-https://genius.com/: HTTP Error 403: Forbidden
-http://www.songlyrics.com/: HTTP Error 403: Forbidden
-http://www.metrolyrics.com
-https://www.cowboylyrics.com/: utf-8 erro
+http://www.jobs.com/
+https://www.monster.com/
+https://jobs.usatoday.com/
+https://www.usajobs.gov/
+http://www.jobsearchusa.org/
+https://www.ziprecruiter.com/
+https://www.usa.gov/job-search

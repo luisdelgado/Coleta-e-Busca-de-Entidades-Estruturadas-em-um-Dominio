@@ -45,8 +45,8 @@ class LinkParser(HTMLParser):
             return "", [], []
 
 
-def crawler(url, maxPages, webSearch, webAnalytics):
-    pagesToVisit = [url]
+def crawler(urlInicial, maxPages, webSearch, webAnalytics):
+    pagesToVisit = [urlInicial]
     numberVisited = 0
     while numberVisited < maxPages and pagesToVisit != []:
         numberVisited = numberVisited +1
@@ -80,22 +80,26 @@ def crawler(url, maxPages, webSearch, webAnalytics):
 
                         if foundWord:
 
-                            # Se tiver, não adiciona ele em links
-                            if link not in pagesToVisit:
+                            # Se tiver e pertencer ao link inicial, não adiciona ele em links
+                            if link not in pagesToVisit and link.find(urlInicial)>-1:
                                 pagesToVisit.append(link)
 
                     else :
 
-                        # Se tiver, não adiciona ele em links
-                        if link not in pagesToVisit:
+                        # Se tiver e pertencer ao link inicial, não adiciona ele em links
+                        if link not in pagesToVisit and link.find(urlInicial)>-1:
                             pagesToVisit.append(link)
 
             else:
-                pagesToVisit = pagesToVisit + links
+                for link in links:
+
+                    # Se pertencer ao link inicial
+                    if link.find(urlInicial)>-1:
+                        pagesToVisit = pagesToVisit + links
 
         except:
             print(traceback.print_exc())
         print(pagesToVisit)
 
 if __name__ == '__main__':
-    crawler("http://www.jobs.com/", 20, True, ["curriculo"]);
+    crawler("http://www.jobs.com/", 20, True, []);

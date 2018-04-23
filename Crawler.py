@@ -4,33 +4,45 @@ from urllib import parse
 import traceback
 
 class LinkParser(HTMLParser):
+    inlink = False
+    newUrl = "";
 
     # Verificando tags do HTML
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attr):
+        if tag.lower() == "a":
+            for (k, v) in attr:
+                if (k.lower() == "href"):
+                    self.newUrl = parse.urljoin(self.baseUrl, v)
+                    self.inlink = True
 
-        # Verificando presenca da tag <a> que serve de ancora para outros sites
-        if tag == 'a':
-            for (key, value) in attrs:
+    def handle_endtag(self, tag):
+        if tag.lower() == "a":
+            self.inlink = False
 
-                # Combinando URL base com nova URL achada
-                if key == 'href':
-                    newUrl = parse.urljoin(self.baseUrl, value)
 
-                    # Adicionando aos outros links
-                    self.links = self.links + [newUrl]
+    def handle_data(self, data):
+        if self.inlink:
+            self.ancoras = self.ancoras + [data]
+        else:
+            self.ancoras = self.ancoras + [""]
+
+        if self.newUrl != "":
+            self.links = self.links + [self.newUrl]
 
     # Obtendo links que crawler() chamara
     def getLinks(self, url):
         self.links = []
         self.baseUrl = url
+        self.ancoras = []
+        print(url)
         response = urlopen(url)
         htmlBytes = response.read()
         htmlString = htmlBytes.decode("utf-8")
         if htmlString.find("text/html"):
             self.feed(htmlString)
-            return htmlString, self.links
+            return htmlString, self.links, self.ancoras
         else:
-            return "", []
+            return "", [], []
 
 
 def crawler(url, maxPages, webSearch, webAnalytics):
@@ -44,56 +56,46 @@ def crawler(url, maxPages, webSearch, webAnalytics):
         parser = LinkParser()
         foundWord = False
         try:
+            data, links, ancoras = parser.getLinks(url)
 
-            # Configurando nome do arquivo
-            save = url
-            save = save.replace('https://', '')
-            save = save.replace('http://', '')
-            save = save.replace(':', '')
-            if (save[-1:] == "/"):
-                save = save.replace(save[-1:], '')
-            save = save + ".html"
-            data, links = parser.getLinks(url)
+            # Escrevendo no arquivo
+            f = open('arquivos/1/' + str(numberVisited) + ".html", 'w+')
+            f.write(str(data))
 
-            if webAnalytics!=[]:
+            # Verificando se o link já está em pagesToVisit para poder adiciona-lo
+            if webSearch:
+                for idx, link in enumerate(links):
 
-                # Verificando se as palavras estão no conteudo da página para adicionar links
-                for word in webAnalytics:
-                    if data.find(word) > -1:
-                        foundWord = True
+                    if webAnalytics!=[]:
 
-                # Escrevendo no arquivo
-                f = open('arquivos/' + str(save), 'w+')
-                f.write(str(data))
+                        # Verificando se as palavras estão no conteudo da página para adicionar links
+                        for word in webAnalytics:
+                            if link.find(word) > -1:
+                                foundWord = True
+                            else:
+                                if ancoras:
+                                    if ancoras[idx] != None:
+                                        if ancoras[idx].find(word) > -1:
+                                            foundWord = True
 
-                # Verificando se o link já está em pagesToVisit para poder adiciona-lo
-                if webSearch and foundWord:
-                    for idx, link in enumerate(links):
+                        if foundWord:
+
+                            # Se tiver, não adiciona ele em links
+                            if link not in pagesToVisit:
+                                pagesToVisit.append(link)
+
+                    else :
 
                         # Se tiver, não adiciona ele em links
                         if link not in pagesToVisit:
                             pagesToVisit.append(link)
 
             else:
-
-                # Escrevendo no arquivo
-                f = open('arquivos/' + str(save), 'w+')
-                f.write(str(data))
-
-                # Verificando se o link já está em pagesToVisit para poder adiciona-lo
-                if webSearch:
-                    for idx, link in enumerate(links):
-
-                        # Se tiver, não adiciona ele em links
-                        if link not in pagesToVisit:
-                            pagesToVisit.append(link)
-
-                else:
-                    pagesToVisit = pagesToVisit + links
+                pagesToVisit = pagesToVisit + links
 
         except:
             print(traceback.print_exc())
         print(pagesToVisit)
 
 if __name__ == '__main__':
-    crawler("http://www.jobs.com/", 20, False, []);
+    crawler("http://www.jobs.com/", 20, True, ["curriculo"]);

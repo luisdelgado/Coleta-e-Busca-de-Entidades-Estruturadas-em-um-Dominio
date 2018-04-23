@@ -21,13 +21,19 @@ class LinkParser(HTMLParser):
 
 
     def handle_data(self, data):
-        if self.inlink:
-            self.ancoras = self.ancoras + [data]
-        else:
-            self.ancoras = self.ancoras + [""]
-
+        has = False
         if self.newUrl != "":
-            self.links = self.links + [self.newUrl]
+            for link in self.links:
+                if link == self.newUrl:
+                    has = True
+
+            if not has:
+                if self.inlink:
+                    self.ancoras = self.ancoras + [data]
+                else:
+                    self.ancoras = self.ancoras + [""]
+
+                self.links = self.links + [self.newUrl]
 
     # Obtendo links que crawler() chamara
     def getLinks(self, url):
@@ -45,12 +51,20 @@ class LinkParser(HTMLParser):
             return "", [], []
 
 
-def crawler(urlInicial, maxPages, webSearch, webAnalytics):
-    pagesToVisit = [urlInicial]
+def crawler(urlInicial, maxPages, webSearch, webAnalytics, weight):
+    if weight:
+        pagesToVisit = [(urlInicial,0)]
+    else:
+        pagesToVisit = [urlInicial]
+
     numberVisited = 0
     while numberVisited < maxPages and pagesToVisit != []:
         numberVisited = numberVisited +1
-        url = pagesToVisit[0]
+        if weight:
+            url, linkWeight = pagesToVisit[0]
+        else:
+            url = pagesToVisit[0]
+
         pagesToVisit = pagesToVisit[1:]
         print(numberVisited, "Visiting:", url)
         parser = LinkParser()
@@ -68,25 +82,43 @@ def crawler(urlInicial, maxPages, webSearch, webAnalytics):
 
                     if webAnalytics!=[]:
 
-                        # Verificando se as palavras estão no conteudo da página para adicionar links
-                        for word in webAnalytics:
-                            if link.find(word) > -1:
-                                foundWord = True
-                            else:
-                                if ancoras:
-                                    if ancoras[idx] != None:
-                                        if ancoras[idx].find(word) > -1:
-                                            foundWord = True
+                        # Verificando se weight está ativado
+                        if weight:
+                            wordCount = 0
 
-                        if foundWord:
+                            # Verificando se as palavras estão no conteudo da página para adicionar links
+                            for word in webAnalytics:
+                                if link.find(word) > -1:
+                                    wordCount = wordCount + 1
+                                else:
+                                    if ancoras:
+                                        if ancoras[idx] != None:
+                                            if ancoras[idx].find(word) > -1:
+                                                wordCount = wordCount + 1
 
-                            # Se tiver e pertencer ao link inicial, não adiciona ele em links
-                            if link not in pagesToVisit and link.find(urlInicial)>-1:
-                                pagesToVisit.append(link)
+                            pagesToVisit = weightLinkInsert(link, wordCount, pagesToVisit, urlInicial)
+
+                        else:
+
+                            # Verificando se as palavras estão no conteudo da página para adicionar links
+                            for word in webAnalytics:
+                                if link.find(word) > -1:
+                                    foundWord = True
+                                else:
+                                    if ancoras:
+                                        if ancoras[idx] != None:
+                                            if ancoras[idx].find(word) > -1:
+                                                foundWord = True
+
+                            if foundWord:
+
+                                # Se tiver e não pertencer ao link inicial, não adiciona ele em links
+                                if link not in pagesToVisit and link.find(urlInicial)>-1:
+                                    pagesToVisit.append(link)
 
                     else :
 
-                        # Se tiver e pertencer ao link inicial, não adiciona ele em links
+                        # Se tiver e não pertencer ao link inicial, não adiciona ele em links
                         if link not in pagesToVisit and link.find(urlInicial)>-1:
                             pagesToVisit.append(link)
 
@@ -101,5 +133,35 @@ def crawler(urlInicial, maxPages, webSearch, webAnalytics):
             print(traceback.print_exc())
         print(pagesToVisit)
 
+def  weightLinkInsert(link, wordCount, pagesToVisit, urlInicial):
+
+    if len(pagesToVisit):
+
+        for idx, page in enumerate(pagesToVisit):
+            url, urlWeight = pagesToVisit[idx]
+
+            if link != url:
+
+                if wordCount > urlWeight:
+
+                    # Se tiver e não pertencer ao link inicial, não adiciona ele em links
+                    if link.find(urlInicial)>-1:
+                        pagesToVisit.insert(0, (link,wordCount))
+
+                # Para último elemento da lista
+                if len(pagesToVisit) == idx+1:
+
+                    # Se tiver e não pertencer ao link inicial, não adiciona ele em links
+                    if link.find(urlInicial)>-1:
+                        pagesToVisit = pagesToVisit + [(link,wordCount)]
+
+    else:
+
+        if link.find(urlInicial)>-1:
+            pagesToVisit = pagesToVisit + [(link,wordCount)]
+
+    return pagesToVisit
+
+
 if __name__ == '__main__':
-    crawler("http://www.jobs.com/", 20, True, []);
+    crawler("http://www.jobs.com/", 20, True, ["jobs","jobs-in-indiana"], True);

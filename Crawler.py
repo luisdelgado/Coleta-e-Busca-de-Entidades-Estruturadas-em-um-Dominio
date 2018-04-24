@@ -135,25 +135,26 @@ def crawler(urlInicial, maxPages, webSearch, webAnalytics, weight):
 
 def  weightLinkInsert(link, wordCount, pagesToVisit, urlInicial):
 
+    # Verificando se pagesToVisit está vazia
     if len(pagesToVisit):
 
         for idx, page in enumerate(pagesToVisit):
             url, urlWeight = pagesToVisit[idx]
 
-            if link != url:
+            # Verificando se o peso do novo link é maior que o link atual
+            if wordCount > urlWeight:
 
-                if wordCount > urlWeight:
+                # Se pertencer ao link inicial, adiciona link em pagesToVisit
+                if link.find(urlInicial)>-1:
+                    pagesToVisit.insert(0, (link,wordCount))
+                    break
 
-                    # Se tiver e não pertencer ao link inicial, não adiciona ele em links
-                    if link.find(urlInicial)>-1:
-                        pagesToVisit.insert(0, (link,wordCount))
+            # Para último elemento da lista
+            if len(pagesToVisit) == idx+1:
 
-                # Para último elemento da lista
-                if len(pagesToVisit) == idx+1:
-
-                    # Se tiver e não pertencer ao link inicial, não adiciona ele em links
-                    if link.find(urlInicial)>-1:
-                        pagesToVisit = pagesToVisit + [(link,wordCount)]
+                # Se pertencer ao link inicial, adiciona link em links
+                if link.find(urlInicial)>-1:
+                    pagesToVisit = pagesToVisit + [(link,wordCount)]
 
     else:
 
@@ -164,4 +165,4 @@ def  weightLinkInsert(link, wordCount, pagesToVisit, urlInicial):
 
 
 if __name__ == '__main__':
-    crawler("http://www.jobs.com/", 20, True, ["jobs","jobs-in-indiana"], True);
+    crawler("http://www.jobs.com/", 20, True, ["jobs","indiana"], True);

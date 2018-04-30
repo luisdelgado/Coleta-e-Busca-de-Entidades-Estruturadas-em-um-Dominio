@@ -1,0 +1,4 @@
+/Content/
+/Scripts/
+/foresee/
+/Service References/

@@ -1,0 +1,29 @@
+/unsubscribe
+/job/track-pageview
+/candidate/
+/alert-job/
+/facebook/
+/amazon/
+/job/track-apply-click
+/job/monster-apply-request
+/?search=
+/geo/job_title
+/blog/wp-admin/
+/contact/zip-resume
+/resume-database/preview-iframe
+/admin
+/login/ # want the main login page allowed, but not pages under /login/
+/mu
+/trk
+/record-event
+/events
+/apply/ # want apply allowed, but not pages under /apply/
+/clk/
+/pixel/
+/chat/get-chat-auth-token
+/jobs/*/closest$
+/jobs/*/clipboard-action$
+/jobs/*/is$
+/svc/seo/
+/Jobs/
+/c/

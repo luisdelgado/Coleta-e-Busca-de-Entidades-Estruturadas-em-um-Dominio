@@ -40,7 +40,7 @@ class LinkParser(HTMLParser):
         self.links = []
         self.baseUrl = url
         self.ancoras = []
-        print(url)
+        #print(url)
         response = urlopen(url)
         htmlBytes = response.read()
         htmlString = htmlBytes.decode("utf-8")
@@ -66,7 +66,10 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
             url = pagesToVisit[0]
 
         pagesToVisit = pagesToVisit[1:]
-        print(numberVisited, "Visiting:", url)
+
+        # progresso
+        print(numberVisited*100 / maxpages, "%")
+        #print(numberVisited, "Visiting:", url)
         parser = LinkParser()
         found_word = False
 
@@ -148,7 +151,7 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
             except:
                 print(traceback.print_exc())
 
-        print(pagesToVisit)
+        #print(pagesToVisit)
 
 
 def weight_link_insert(link, word_count, pages_to_visit, url_inicial):
@@ -210,7 +213,11 @@ def robots(filenumber):
 
 
 if __name__ == '__main__':
-    inputSite = "https://www.totaljobs.com/"
-    pasta = verificando_site(inputSite)
-    proibido = robots(pasta)
-    crawler(inputSite, pasta, proibido, 1, True, ["jobs", "location", "salary"], True)
+    sites = ["https://www.usajobs.gov/", "https://www.ziprecruiter.com/", "https://www.indeed.co.uk/", "http://www.jobs.ac.uk/",
+             "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
+    for site in sites:
+        print(site)
+        inputSite = site
+        pasta = verificando_site(inputSite)
+        proibido = robots(pasta)
+        crawler(inputSite, pasta, proibido, 1000, False, [], False)

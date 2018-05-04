@@ -12,12 +12,12 @@
 /contact/zip-resume
 /resume-database/preview-iframe
 /admin
-/login/ # want the main login page allowed, but not pages under /login/
+/login/
 /mu
 /trk
 /record-event
 /events
-/apply/ # want apply allowed, but not pages under /apply/
+/apply/
 /clk/
 /pixel/
 /chat/get-chat-auth-token

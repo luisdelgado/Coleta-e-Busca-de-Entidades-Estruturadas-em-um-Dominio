@@ -2,6 +2,7 @@ from html.parser import HTMLParser
 from urllib.request import urlopen
 from urllib import parse
 import traceback
+import datetime
 
 
 class LinkParser(HTMLParser):
@@ -58,6 +59,7 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
         pagesToVisit = [url_inicial]
 
     numberVisited = 0
+    new_link = True
     while numberVisited < maxpages and pagesToVisit != []:
         numberVisited = numberVisited + 1
         if weight:
@@ -66,6 +68,12 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
             url = pagesToVisit[0]
 
         pagesToVisit = pagesToVisit[1:]
+
+        # Removendo páginas que nunca serão visitadas
+        if (maxpages - numberVisited) < len(pagesToVisit):
+            new_link = False
+            not_used = len(pagesToVisit) - (maxpages - numberVisited)
+            pagesToVisit = pagesToVisit[:-not_used]
 
         # progresso
         print(numberVisited*100 / maxpages, "%")
@@ -142,11 +150,14 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
                                 pagesToVisit.append(link)
 
                 else:
-                    for link in links:
 
-                        # Se pertencer ao link inicial
-                        if link.find(url_inicial) > -1:
-                            pagesToVisit = pagesToVisit + links
+                    # Verificando se ainda deve adicionar links
+                    if new_link:
+                        for link in links:
+
+                            # Se pertencer ao link inicial
+                            if link.find(url_inicial) > -1:
+                                pagesToVisit = pagesToVisit + links
 
             except:
                 print(traceback.print_exc())
@@ -213,11 +224,21 @@ def robots(filenumber):
 
 
 if __name__ == '__main__':
+    inicio = (datetime.datetime.now().time())
+    print("inicio total", inicio)
     sites = ["https://www.usajobs.gov/", "https://www.ziprecruiter.com/", "https://www.indeed.co.uk/", "http://www.jobs.ac.uk/",
              "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
+    # sites = ["https://www.usajobs.gov/"]
     for site in sites:
+        inicioSite = (datetime.datetime.now().time())
+        print("inicio site", inicioSite)
         print(site)
         inputSite = site
         pasta = verificando_site(inputSite)
         proibido = robots(pasta)
         crawler(inputSite, pasta, proibido, 1000, False, [], False)
+        fimSite = (datetime.datetime.now().time())
+        print("fim site", fimSite)
+
+    fim = (datetime.datetime.now().time())
+    print(inicio, fim)

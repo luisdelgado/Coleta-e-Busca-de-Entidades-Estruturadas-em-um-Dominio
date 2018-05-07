@@ -60,6 +60,7 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
 
     numberVisited = 0
     new_link = True
+    corretos = 0
     while numberVisited < maxpages and pagesToVisit != []:
         numberVisited = numberVisited + 1
         if weight:
@@ -102,6 +103,11 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
                     # Escrevendo no arquivo
                     f = open('arquivos/' + str(selectedfile) + '/' + str(numberVisited) + ".html", 'w+')
                     f.write(str(data))
+
+                # Verificando relevancoa do site
+                if data.find(webanalytics[0]) > -1:
+                    if data.find(webanalytics[1]) > -1:
+                        corretos = corretos + 1
 
                 # Verificando se o link já está em pagesToVisit para poder adiciona-lo
                 if websearch:
@@ -160,9 +166,12 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
                                 pagesToVisit = pagesToVisit + links
 
             except:
-                print(traceback.print_exc())
+                pass
+                #print(traceback.print_exc())
 
         #print(pagesToVisit)
+
+    print(corretos)
 
 
 def weight_link_insert(link, word_count, pages_to_visit, url_inicial):
@@ -226,9 +235,9 @@ def robots(filenumber):
 if __name__ == '__main__':
     inicio = (datetime.datetime.now().time())
     print("inicio total", inicio)
-    sites = ["https://www.usajobs.gov/", "https://www.ziprecruiter.com/", "https://www.indeed.co.uk/", "http://www.jobs.ac.uk/",
-             "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
-    # sites = ["https://www.usajobs.gov/"]
+    #sites = ["https://www.usajobs.gov/", "https://www.ziprecruiter.com/", "https://www.indeed.co.uk/", "http://www.jobs.ac.uk/",
+    #         "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
+    sites = ["http://www.jobs.ac.uk/"]
     for site in sites:
         inicioSite = (datetime.datetime.now().time())
         print("inicio site", inicioSite)
@@ -236,9 +245,9 @@ if __name__ == '__main__':
         inputSite = site
         pasta = verificando_site(inputSite)
         proibido = robots(pasta)
-        crawler(inputSite, pasta, proibido, 1000, False, [], False)
+        crawler(inputSite, pasta, proibido, 1000, True, ["location", "salary"], True)
         fimSite = (datetime.datetime.now().time())
-        print("fim site", fimSite)
+        print(site, inicioSite, fimSite)
 
     fim = (datetime.datetime.now().time())
     print(inicio, fim)

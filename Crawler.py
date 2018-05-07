@@ -235,9 +235,11 @@ def robots(filenumber):
 if __name__ == '__main__':
     inicio = (datetime.datetime.now().time())
     print("inicio total", inicio)
-    #sites = ["https://www.usajobs.gov/", "https://www.ziprecruiter.com/", "https://www.indeed.co.uk/", "http://www.jobs.ac.uk/",
-    #         "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
-    sites = ["http://www.jobs.ac.uk/"]
+
+    sites = ["https://www.usajobs.gov/", 'https://www.ziprecruiter.com/', "https://www.indeed.co.uk/",
+             "http://www.jobs.ac.uk/", "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
+    # sites = ["http://www.jobs.ac.uk/"]
+
     for site in sites:
         inicioSite = (datetime.datetime.now().time())
         print("inicio site", inicioSite)

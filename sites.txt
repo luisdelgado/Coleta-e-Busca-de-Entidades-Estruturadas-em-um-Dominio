@@ -1,7 +1,6 @@
-http://www.jobs.com/
-https://www.monster.com/
-https://jobs.usatoday.com/
 https://www.usajobs.gov/
-http://www.jobsearchusa.org/
 https://www.ziprecruiter.com/
-https://www.usa.gov/job-search
+https://www.indeed.co.uk/
+http://www.jobs.ac.uk/
+https://www.reed.co.uk/
+https://www.totaljobs.com/

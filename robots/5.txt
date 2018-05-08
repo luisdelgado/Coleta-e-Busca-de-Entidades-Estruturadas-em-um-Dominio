@@ -1,0 +1,7 @@
+/jobs/
+/LearningCentre/Course/RequestDetails
+/linkclicked.html
+/api/
+/handlers/
+/courses/api/
+https://server.iad.liveperson.net/

@@ -3,6 +3,7 @@ from urllib.request import urlopen
 from urllib import parse
 import traceback
 import datetime
+import time
 
 
 class LinkParser(HTMLParser):
@@ -61,6 +62,9 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
     numberVisited = 0
     new_link = True
     corretos = 0
+
+    # Timer
+    old_time = 0
     while numberVisited < maxpages and pagesToVisit != []:
         numberVisited = numberVisited + 1
         if weight:
@@ -90,7 +94,14 @@ def crawler(url_inicial, selectedfile, prohibition, maxpages, websearch, webanal
 
         if not linkproibido:
             try:
+
+                # Setando para esperar pelo menos 1 segundo entre cada consulta ao  site
+                current_time = datetime.datetime.now().strftime('%S.%f')[:-4]
+                if float(current_time) - float(old_time) < 1:
+                    time.sleep(1)
+
                 data, links, ancoras = parser.getLinks(url)
+                old_time = datetime.datetime.now().strftime('%S.%f')[:-4]
 
                 # Verificando se é baseline
                 if websearch:
@@ -236,9 +247,9 @@ if __name__ == '__main__':
     inicio = (datetime.datetime.now().time())
     print("inicio total", inicio)
 
-    sites = ["https://www.usajobs.gov/", 'https://www.ziprecruiter.com/', "https://www.indeed.co.uk/",
-             "http://www.jobs.ac.uk/", "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
-    # sites = ["http://www.jobs.ac.uk/"]
+    # sites = ["https://www.usajobs.gov/", 'https://www.ziprecruiter.com/', "https://www.indeed.co.uk/",
+    #          "http://www.jobs.ac.uk/", "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
+    sites = ["https://www.totaljobs.com/"]
 
     for site in sites:
         inicioSite = (datetime.datetime.now().time())

@@ -10,10 +10,10 @@ def verificar_word(selected_file, number_visited, end_word):
         for line in file:
             if line.find(end_word) > -1:
                 if line.find(str(number_document)) == -1:
-                    for word in line:
-                        if word == ' \n':
-                            line = word.replace(" \n", ("- " + str(selected_file) + str(number_visited)) + " \n")
-                            searched = True
+                    line = (line.rsplit(' ', 1))
+                    line[0] = line[0] + str(" - " + str(selected_file) + str(number_visited) + " \n")
+                    line = line[0]
+                searched = True
 
             end_file = end_file + line
 
@@ -84,7 +84,7 @@ class ArquivoInvertido:
                                 end_word = end_word + word
                             else:
                                 if end_word != "":
-                                    end_file = verificar_word(selected_file, number_visited, end_word)
+                                    verificar_word(selected_file, number_visited, end_word)
                                     end_word = ""
 
             except:

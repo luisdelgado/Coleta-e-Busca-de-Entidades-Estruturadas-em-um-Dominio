@@ -117,20 +117,17 @@ class ArquivoInvertido:
             print(number_visited / 10, "%")
 
     def ordenar_arquivo(end_file):
+        end_file = ""
 
         # Ordendando arquivo
         with open('invertido/arquivo.txt') as file:
             lines = sorted(file.readlines())
 
-        # Transformando de lista para um modo melhor de visualização
-        contador = 1
-        while lines[0][contador] != "]":
-            if lines[0][contador] == "," and lines[0][contador - 1] != "\n":
-                end_file = end_file + "\n"
-            else:
-                if lines[0][contador] != "'":
-                    end_file = end_file + str(lines[0][contador])
-            contador = contador + 1
+            # Transformando de lista para um modo melhor de visualização
+            contador = 1
+            while contador < len(lines):
+                end_file = end_file + lines[contador]
+                contador = contador + 1
 
         # Escrevendo no arquivo
         f = open('invertido/arquivo.txt', 'w+')

@@ -1,5 +1,6 @@
 import datetime
 from collections import OrderedDict
+import os
 
 
 def verificar_palavra(selected_file, number_visited, end_word):
@@ -149,9 +150,19 @@ class ArquivoInvertido:
         while sites < 7:
             print("site:", sites, datetime.datetime.now().time())
             criando_arquivo(sites)
+
+            # Medidando tamanho do aqruivo invertido
+            with open('invertido/arquivo.txt') as file:
+                print (os.path.getsize(file.name), "B")
+
             sites = sites + 1
 
         print("inicio ordenando arquivo invertido", datetime.datetime.now().time())
         ordenar_arquivo("")
+
+        # Medidando tamanho do aqruivo invertido
+        with open('invertido/arquivo.txt') as file:
+            print(os.path.getsize(file.name), "B")
+
         fim = (datetime.datetime.now().time())
         print("inicio", inicio, "fim", fim)

@@ -1,33 +1,13 @@
 import datetime
 from collections import OrderedDict
-import threading
-
-
-def my_thread1():
-    criando_arquivo(1)
-
-
-def my_thread3():
-    criando_arquivo(3)
-
-
-def my_thread4():
-    criando_arquivo(4)
-
-
-def my_thread5():
-    criando_arquivo(5)
-
-
-def my_thread6():
-    criando_arquivo(6)
+import os
 
 
 def verificar_palavra(selected_file, number_visited, end_word):
     searched = False
     end_file = ""
     number_document = str(selected_file) + str(number_visited)
-    with open('invertido/' + str(selected_file) + '/arquivo.txt') as file:
+    with open('invertido/arquivo.txt') as file:
         for line in file:
 
             # Verificando se a palavra já existe no aqruivo invertido
@@ -54,7 +34,7 @@ def verificar_palavra(selected_file, number_visited, end_word):
         end_file = "\n".join(list(OrderedDict.fromkeys(end_file.split("\n"))))
 
     # Escrevendo no arquivo
-    f = open('invertido/' + str(selected_file) + '/arquivo.txt', 'w+')
+    f = open('invertido/arquivo.txt', 'w+')
     f.write(str(end_file))
     f.close()
 
@@ -63,6 +43,7 @@ class ArquivoInvertido:
 
     def arquivo_invertido(self):
         pass
+
 
 def remover_html(selected_file):
         number_visited = 1
@@ -102,6 +83,7 @@ def remover_html(selected_file):
             print(number_visited / 10, "%")
             number_visited = number_visited + 1
 
+
 def criando_arquivo(selected_file):
         number_visited = 1
         while number_visited < 1000:
@@ -140,11 +122,12 @@ def criando_arquivo(selected_file):
             number_visited = number_visited + 1
             print(selected_file, number_visited / 10, "%")
 
-def ordenar_arquivo(selected_file):
+
+def ordenar_arquivo(end_file):
         end_file = ""
 
         # Ordendando arquivo
-        with open('invertido/' + str(selected_file) + 'arquivo.txt') as file:
+        with open('invertido/arquivo.txt') as file:
             lines = sorted(file.readlines())
 
             # Transformando de lista para um modo melhor de visualização
@@ -154,9 +137,10 @@ def ordenar_arquivo(selected_file):
                 contador = contador + 1
 
         # Escrevendo no arquivo
-        f = open('invertido/' + str(selected_file) + 'arquivo.txt', 'w+')
+        f = open('invertido/arquivo.txt', 'w+')
         f.write(str(end_file))
         f.close()
+
 
 if __name__ == '__main__':
 
@@ -168,20 +152,24 @@ if __name__ == '__main__':
             remover_html(sites)
             sites = sites + 1
 
+        sites = 1
         print("inicio criando arquivo invertido", datetime.datetime.now().time())
-        t1 = threading.Thread(target=my_thread1, args=[])
-        t3 = threading.Thread(target=my_thread3, args=[])
-        t4 = threading.Thread(target=my_thread4, args=[])
-        t5 = threading.Thread(target=my_thread5, args=[])
-        t6 = threading.Thread(target=my_thread6, args=[])
-        t1.start()
-        t3.start()
-        t4.start()
-        t5.start()
-        t6.start()
+        while sites < 7:
+            print("site:", sites, datetime.datetime.now().time())
+            criando_arquivo(sites)
+
+            # Medidando tamanho do aqruivo invertido
+            with open('invertido/arquivo.txt') as file:
+                print(os.path.getsize(file.name), "B")
+
+            sites = sites + 1
 
         print("inicio ordenando arquivo invertido", datetime.datetime.now().time())
-        #ordenar_arquivo(selected_file)
+        ordenar_arquivo("")
+
+        # Medidando tamanho do aqruivo invertido
+        with open('invertido/arquivo.txt') as file:
+            print(os.path.getsize(file.name), "B")
 
         fim = (datetime.datetime.now().time())
         print("inicio", inicio, "fim", fim)

@@ -3,14 +3,17 @@ class ProcessamentoConsulta:
     def processamento_consulta(self):
         pass
 
-    def tratar_resposta(resposta):
+    def tratar_resposta(consulta, resposta):
 
+        documentos = ""
         if resposta == "":
             resposta = "Infelizmente não foi encontrado nenhum documento para a sua consulta."
             documentos = resposta
         else:
-            resposta = resposta.split(' ', 1)
-            documentos = resposta[1]
+            for line in resposta.splitlines():
+                if line.find(consulta) > -1:
+                    line = line.split(' ', 1)
+                    documentos = documentos + line[1] + " - "
 
         return documentos
 
@@ -24,11 +27,10 @@ class ProcessamentoConsulta:
         with open('invertido/arquivo.txt') as file:
             for line in file:
                 if line.find(consulta) > -1:
-                    resposta = line
-                    break
+                    resposta = resposta + line
 
         # Retornar apenas documentos que tem o termo
-        resposta = tratar_resposta(resposta)
+        resposta = tratar_resposta(consulta, resposta)
 
         print("\n" + consulta, "foi encontrado nos seguintes documentos:")
         print(resposta)

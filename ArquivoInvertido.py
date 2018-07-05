@@ -140,14 +140,14 @@ class ArquivoInvertido:
         sites = 1
         print("inicio remover html")
         while sites < 7:
-            print(sites, datetime.datetime.now().time())
+            print("site:", sites, datetime.datetime.now().time())
             remover_html(sites)
             sites = sites + 1
 
         sites = 1
         print("inicio criando arquivo invertido", datetime.datetime.now().time())
         while sites < 7:
-            print(sites, datetime.datetime.now().time())
+            print("site:", sites, datetime.datetime.now().time())
             criando_arquivo(sites)
             sites = sites + 1
 

@@ -1,5 +1,6 @@
 import datetime
 from collections import OrderedDict
+import os
 
 
 def verificar_palavra(selected_file, number_visited, end_word):
@@ -40,7 +41,11 @@ def verificar_palavra(selected_file, number_visited, end_word):
 
 class ArquivoInvertido:
 
-    def remover_html(selected_file):
+    def arquivo_invertido(self):
+        pass
+
+
+def remover_html(selected_file):
         number_visited = 1
         while number_visited < 1000:
             try:
@@ -78,7 +83,8 @@ class ArquivoInvertido:
             print(number_visited / 10, "%")
             number_visited = number_visited + 1
 
-    def criando_arquivo(selected_file):
+
+def criando_arquivo(selected_file):
         number_visited = 1
         while number_visited < 1000:
             word_list = []
@@ -114,9 +120,10 @@ class ArquivoInvertido:
 
             # Verificando andamento do programa
             number_visited = number_visited + 1
-            print(number_visited / 10, "%")
+            print(selected_file, number_visited / 10, "%")
 
-    def ordenar_arquivo(end_file):
+
+def ordenar_arquivo(end_file):
         end_file = ""
 
         # Ordendando arquivo
@@ -134,7 +141,8 @@ class ArquivoInvertido:
         f.write(str(end_file))
         f.close()
 
-    if __name__ == '__main__':
+
+if __name__ == '__main__':
 
         inicio = (datetime.datetime.now().time())
         sites = 1
@@ -149,9 +157,19 @@ class ArquivoInvertido:
         while sites < 7:
             print("site:", sites, datetime.datetime.now().time())
             criando_arquivo(sites)
+
+            # Medidando tamanho do aqruivo invertido
+            with open('invertido/arquivo.txt') as file:
+                print(os.path.getsize(file.name), "B")
+
             sites = sites + 1
 
         print("inicio ordenando arquivo invertido", datetime.datetime.now().time())
         ordenar_arquivo("")
+
+        # Medidando tamanho do aqruivo invertido
+        with open('invertido/arquivo.txt') as file:
+            print(os.path.getsize(file.name), "B")
+
         fim = (datetime.datetime.now().time())
         print("inicio", inicio, "fim", fim)

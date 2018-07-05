@@ -1,7 +1,6 @@
 from html.parser import HTMLParser
 from urllib.request import urlopen
 from urllib import parse
-import traceback
 import datetime
 import time
 
@@ -247,9 +246,9 @@ if __name__ == '__main__':
     inicio = (datetime.datetime.now().time())
     print("inicio total", inicio)
 
-    # sites = ["https://www.usajobs.gov/", 'https://www.ziprecruiter.com/', "https://www.indeed.co.uk/",
-    #          "http://www.jobs.ac.uk/", "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
-    sites = ["https://www.totaljobs.com/"]
+    sites = ["https://www.usajobs.gov/", 'https://www.ziprecruiter.com/', "https://www.indeed.co.uk/",
+             "http://www.jobs.ac.uk/", "https://www.reed.co.uk/", "https://www.totaljobs.com/"]
+    # sites = ["https://www.totaljobs.com/"]
 
     for site in sites:
         inicioSite = (datetime.datetime.now().time())
